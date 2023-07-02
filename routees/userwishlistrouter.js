@@ -26,11 +26,15 @@ userwishlistrouter.post("/createwihslist", async(req,res)=>
     console.log(payload)
     // res.send("creating wishlist")
     try {
+        let cart=await Createwishlistmodel.findOne(payload)
+        if(cart){
+         return  res.send({message:"This product is already in Wishlist"})
+        }
         let newcart=new Createwishlistmodel(payload)
         await newcart.save()
         res.send({message:"Added to Wishlist"})
     } catch (error) {
-        res.send({message:"This product is already in Wishlist"})
+        res.send({message:"something went wrong"})
     }
     
  })
