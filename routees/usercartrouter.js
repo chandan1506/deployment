@@ -26,12 +26,17 @@ userCartrouter.post("/createcart", async(req,res)=>
     let payload=req.body
     console.log(payload)
     try {
+        let cart=await Createcartmodel.findOne(payload)
+           if(cart){
+            return  res.send({message:"This product is already in Cart"})
+           }
         let newcart=new Createcartmodel(payload)
         await newcart.save()
         res.send({message:"Added to cart"})
     } catch (error) {
-        res.send({message:"This product is already in Cart"})
+        res.send({message:"something went wrong"})
     }
+    
     
  })
 
