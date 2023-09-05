@@ -14,7 +14,6 @@ passport.use(new GoogleStrategy({
     //  console.log(profile)
     let email = profile._json.email
     let name = profile._json.name
-    let contact = profile._json.contact
    // checking user in database is available or not 
     let x = await Createusermodel.findOne({email});
     if(x){
@@ -23,7 +22,6 @@ passport.use(new GoogleStrategy({
    const user = new Createusermodel({
     name,
     email,
-    contact,
     password: uuidv4()
    })
    await user.save();
