@@ -9,7 +9,7 @@ const {userwishlistrouter}=require("./routees/userwishlistrouter")
 const {adminRouter}=require("./routees/admin.router")
 const{authentication}=require("./middlewares/authenticationmiddleware")
 const cors = require('cors')
-
+const jwt = require("jsonwebtoken")
 
 const app=express()
 app.use(cors({
@@ -30,7 +30,23 @@ app.use("/adminproducts",adminproduct)
 
 app.use("/users",userrouter)
 
+// google Oauth
+const passport = require("./config/google-Oauth")
+app.get('/auth/google',
+    passport.authenticate('google', { scope: ['profile', 'email'] }));
 
+app.get('/auth/google/callback',
+    passport.authenticate('google', {
+        failureRedirect: 'https://jewels-frontend-4s.vercel.app/html/login_signup.html',
+        session: false
+    }),
+    function (req, res) {
+        // Successful authentication, redirect home.
+
+        const token = jwt.sign({ userID: req.user._id, name: req.user.name }, process.env.key)
+
+        res.redirect(`https://jewels-frontend-4s.vercel.app?name=${req.user.name}&token=${token}`)
+    });
 
 app.use(authentication)
 app.use("/cart",userCartrouter)
